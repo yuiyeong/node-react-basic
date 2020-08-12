@@ -1,5 +1,6 @@
 const express = require('express')
 const mongoose = require('mongoose')
+const config = require('./config')
 const bodyParser = require('body-parser')
 const { User } = require('./models/User')
 
@@ -11,8 +12,8 @@ app.use(bodyParser.urlencoded({ extended: true }))
 // application/json
 app.use(bodyParser.json())
 
-mongoose.connect('', {
-  useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true, useFindAndModify: false  
+mongoose.connect(config.MONGO_DB_URI, {
+  useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true, useFindAndModify: false
 })
 .then(() => console.log('connected to mongo db'))
 .catch(e => console.error(e))
@@ -25,7 +26,7 @@ app.post('/register', (req, res) => {
   const user = new User(req.body)
   user.save((err, doc) => {
     if(err) return res.status(400).json({ success: false, err})
-    
+
     return res.status(200).json({ success: true })
   })
 })

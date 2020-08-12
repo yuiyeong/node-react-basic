@@ -1,5 +1,7 @@
 const mongoose = require('mongoose')
 const bcrypt = require('bcrypt')
+const jwt = require('jsonwebtoken')
+const config = require('../config')
 
 const SALT_ROUND = 10
 
@@ -28,6 +30,21 @@ userSchema.pre('save', function (next) {
     next()
   }
 })
+
+userSchema.methods.comparePassword = function (plainPassword, callback) {
+  bcrypt.compare(plainPassword, this.password, callback)
+}
+
+userSchema.methods.generateToken = function (callback) {
+  let user = this
+  let token = jwt.sign(user._id, config.TOKEN_SECRET_KEY)
+  user.token = token
+  user.save((error, user) => {
+    if(error) return callback(error)
+    
+    callback(null, user)
+  })
+}
 
 const User = mongoose.model('User', userSchema)
 

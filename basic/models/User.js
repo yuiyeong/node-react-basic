@@ -37,10 +37,10 @@ userSchema.methods.comparePassword = function (plainPassword, callback) {
 
 userSchema.methods.generateToken = function (callback) {
   let user = this
-  let token = jwt.sign(user._id, config.TOKEN_SECRET_KEY)
+  let token = jwt.sign(user._id.toHexString(), config.TOKEN_SECRET_KEY)
   user.token = token
   user.save((error, user) => {
-    if(error) return callback(error)
+    if ( error ) return callback(error)
     
     callback(null, user)
   })

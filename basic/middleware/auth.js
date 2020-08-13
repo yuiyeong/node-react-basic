@@ -1,7 +1,8 @@
-const User = require('../models/User')
+const { User } = require('../models/User')
 
 const auth = (req, res, next) => {
   let token = req.cookies.x_auth
+
   User.findByToken(token, (error, user) => {
     if(error) throw error
 

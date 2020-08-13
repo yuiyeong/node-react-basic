@@ -25,7 +25,7 @@ mongoose.connect(config.MONGO_DB_URI, {
 
 app.get('/', (req, res) => res.send('Hello World!'))
 
-app.post('/register', (req, res) => {
+app.post('/api/users/register', (req, res) => {
   const user = new User(req.body)
   user.save((err, doc) => {
     if(err) return res.status(400).json({ success: false, err})
@@ -35,7 +35,7 @@ app.post('/register', (req, res) => {
 })
 
 
-app.post('/login', (req, res) => {
+app.post('/api/users/login', (req, res) => {
   User.findOne({ email: req.body.email }, (err, user) => {
     if (err) return res.status(404).json({ success: false, err })
 
@@ -51,7 +51,15 @@ app.post('/login', (req, res) => {
   })
 })
 
-
+app.get('/api/users/auth', auth, (req, res) => {
+  const {  _id, role, email, name } = req.user
+  res.status(200).json({
+    _id,
+    isAdmin: role === 0 ? false : true,
+    email,
+    name
+  })
+})
 
 
 

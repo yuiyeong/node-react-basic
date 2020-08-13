@@ -46,6 +46,13 @@ userSchema.methods.generateToken = function (callback) {
   })
 }
 
+userSchema.statics.findByToken = function (token, callback) {
+  let user = this
+  jwt.verify(token, config.TOKEN_SECRET_KEY, (err, decoded) => {
+    user.findOne({ "_id": decoded, "token": token }, callback)
+  })
+}
+
 const User = mongoose.model('User', userSchema)
 
 module.exports = { User }
